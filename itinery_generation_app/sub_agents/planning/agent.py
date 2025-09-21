@@ -5,7 +5,7 @@ from google.adk.tools.agent_tool import AgentTool
 from google.genai.types import GenerateContentConfig
 from itinery_generation_app.shared_libraries import types
 from itinery_generation_app.sub_agents.planning import prompt
-from travel_concierge.tools.memory import memorize
+from itinery_generation_app.tools.memory import memorize
 from google.adk.tools import google_search, url_context
 
 itinerary_agent = Agent(
