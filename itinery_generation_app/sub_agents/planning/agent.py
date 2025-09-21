@@ -5,8 +5,8 @@ from google.adk.tools.agent_tool import AgentTool
 from google.genai.types import GenerateContentConfig
 from itinery_generation_app.shared_libraries import types
 from itinery_generation_app.sub_agents.planning import prompt
-from itinery_generation_app.tools.memory import memorize
-
+from travel_concierge.tools.memory import memorize
+from google.adk.tools import google_search, url_context
 
 itinerary_agent = Agent(
     model="gemini-2.5-flash",
@@ -18,6 +18,7 @@ itinerary_agent = Agent(
     output_schema=types.Itinerary,
     output_key="itinerary",
     generate_content_config=types.json_response_config,
+    tools=[google_search]
 )
 
 
@@ -43,6 +44,7 @@ hotel_search_agent = Agent(
     output_schema=types.HotelsSelection,
     output_key="hotel",
     generate_content_config=types.json_response_config,
+    tools=[google_search, url_context]
 )
 
 
@@ -68,6 +70,7 @@ flight_search_agent = Agent(
     output_schema=types.FlightsSelection,
     output_key="flight",
     generate_content_config=types.json_response_config,
+    tools=[google_search, url_context]
 )
 
 
