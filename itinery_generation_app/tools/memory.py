@@ -1,9 +1,6 @@
-
 """The 'memorize' tool for several agents to affect session states."""
 
 from datetime import datetime
-import json
-import os
 from typing import Dict, Any
 
 from google.adk.agents.callback_context import CallbackContext
@@ -12,9 +9,42 @@ from google.adk.tools import ToolContext
 
 from itinery_generation_app.shared_libraries import constants
 
-SAMPLE_SCENARIO_PATH = os.getenv(
-    "TRAVEL_CONCIERGE_SCENARIO", "itinery_generation_app/profiles/itinerary_empty_default.json"
-)
+# Directly embed the JSON data here as a Python dictionary.
+# This approach eliminates the need to read from a file, solving the
+# "No such file or directory" error during deployment.
+DEFAULT_ITINERARY_STATE = {
+    "state": {
+        "user_profile": {
+            "passport_nationality": "US Citizen",
+            "seat_preference": "window",
+            "food_preference": "vegan",
+            "allergies": [],
+            "likes": [],
+            "dislikes": [],
+            "price_sensitivity": [],
+            "home": {
+                "event_type": "home",
+                "address": "6420 Sequence Dr #400, San Diego, CA 92121, United States",
+                "local_prefer_mode": "drive"
+            }
+        },
+        "itinerary": {},
+        "origin": "",
+        "destination": "",
+        "start_date": "",
+        "end_date": "",
+        "outbound_flight_selection": "",
+        "outbound_seat_number": "",
+        "return_flight_selection": "",
+        "return_seat_number": "",
+        "hotel_selection": "",
+        "room_selection": "",
+        "poi": "",
+        "itinerary_datetime": "",
+        "itinerary_start_date": "",
+        "itinerary_end_date": ""
+    }
+}
 
 
 def memorize_list(key: str, value: str, tool_context: ToolContext):
@@ -98,16 +128,10 @@ def _set_initial_states(source: Dict[str, Any], target: State | dict[str, Any]):
 
 def _load_precreated_itinerary(callback_context: CallbackContext):
     """
-    Sets up the initial state.
-    Set this as a callback as before_agent_call of the root_agent.
-    This gets called before the system instruction is contructed.
-
+    Sets up the initial state directly from an embedded dictionary.
+    
     Args:
         callback_context: The callback context.
-    """    
-    data = {}
-    with open(SAMPLE_SCENARIO_PATH, "r") as file:
-        data = json.load(file)
-        print(f"\nLoading Initial State: {data}\n")
-
-    _set_initial_states(data["state"], callback_context.state)
+    """
+    print(f"\nLoading Initial State from embedded JSON...\n")
+    _set_initial_states(DEFAULT_ITINERARY_STATE["state"], callback_context.state)
